@@ -1,5 +1,5 @@
 """
-Hybrid retrieval: Vector (Qdrant) + BM25 keyword search with Reciprocal Rank Fusion.
+Hybrid retrieval: Vector (Chroma) + BM25 keyword search with Reciprocal Rank Fusion.
 Company-scoped filtering ensures cross-contamination-free results.
 """
 from __future__ import annotations

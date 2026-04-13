@@ -3,8 +3,8 @@ uvicorn[standard]>=0.32.0
 python-dotenv>=1.0.0
 pyyaml>=6.0.1
 
-# LlamaIndex core
-llama-index-core>=0.12.0
+# LlamaIndex core (0.14+ aligns with vector-stores-chroma on current Python / LlamaIndex)
+llama-index-core>=0.14.0
 
 # LLM providers
 llama-index-llms-google-genai>=0.8.0
@@ -18,7 +18,7 @@ llama-index-embeddings-huggingface>=0.5.0
 llama-index-vector-stores-chroma>=0.4.0
 chromadb>=0.5.0
 
-# Neo4j driver (KG import: scripts/load_kg_json_to_neo4j.py)
+# Neo4j driver (KG import scripts + optional live Cypher graph context in chat)
 neo4j>=5.0.0
 
 # PDF processing
