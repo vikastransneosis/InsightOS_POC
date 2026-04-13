@@ -43,12 +43,9 @@ env/
 .DS_Store
 Thumbs.db
 
-# --- Generated storage (ingest, KG extract, Chroma, registry) ---
+# --- Storage: all generated / supplied offline (Chroma, JSON, SQLite) — not in git ---
 storage/*
 !storage/.gitkeep
-
-# --- Large PDFs — place your own files in documents/ after clone ---
-documents/*.pdf
 
 # --- Logs & caches ---
 *.log

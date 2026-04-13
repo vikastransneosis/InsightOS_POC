@@ -63,6 +63,65 @@ def _save_bm25_corpus(nodes: list) -> int:
     return len(rows)
 
 
+def rebuild_chroma_from_docstore() -> dict[str, Any]:
+    """
+    Re-embed leaf nodes into Chroma from persisted docstore (no PDF parsing).
+    Used after clone when repo ships docstore.json but not storage/chroma/.
+    """
+    from llama_index.core.node_parser.relational.hierarchical import get_leaf_nodes
+
+    from config.settings import configure_global_settings
+
+    configure_global_settings()
+
+    global _vector_store, _docstore
+
+    if not DOCSTORE_PATH.is_file():
+        return {"error": "docstore.json not found; run a full ingest with PDFs first"}
+
+    docstore = SimpleDocumentStore.from_persist_path(str(DOCSTORE_PATH))
+    all_nodes = list(docstore.docs.values())
+    if not all_nodes:
+        return {"error": "docstore is empty"}
+
+    leaf_nodes = get_leaf_nodes(all_nodes)
+    leaf_nodes = [
+        n for n in leaf_nodes
+        if (n.get_content(metadata_mode=MetadataMode.EMBED) or "").strip()
+    ]
+
+    try:
+        if CHROMA_DIR.is_dir():
+            c = chromadb.PersistentClient(path=str(CHROMA_DIR))
+            try:
+                c.delete_collection(CHROMA_COLLECTION)
+            except Exception:
+                pass
+    except Exception as e:
+        logger.warning("Chroma cleanup before rebuild: %s", e)
+
+    vector_store = _get_chroma_vector_store()
+    storage_context = StorageContext.from_defaults(
+        vector_store=vector_store,
+        docstore=docstore,
+    )
+    VectorStoreIndex(
+        leaf_nodes,
+        storage_context=storage_context,
+        show_progress=True,
+    )
+    bm25_rows = _save_bm25_corpus(leaf_nodes)
+
+    _vector_store = None
+    _docstore = None
+
+    return {
+        "status": "rebuilt_chroma_from_docstore",
+        "leaf_nodes_indexed": len(leaf_nodes),
+        "bm25_corpus_rows": bm25_rows,
+    }
+
+
 def run_ingestion(
     root: Path | None = None,
     *,
@@ -145,6 +204,16 @@ def run_ingestion(
         update_status(doc_id, "parsing_done")
 
     if not all_docs:
+        if not reset and not index_exists() and DOCSTORE_PATH.is_file():
+            logger.info(
+                "Bundled docstore present but Chroma missing — rebuilding vector index only."
+            )
+            return rebuild_chroma_from_docstore()
+        if index_exists():
+            return {
+                "status": "already_indexed",
+                "skipped_pages": len(skipped_pages),
+            }
         return {"error": "No new documents to ingest", "skipped_pages": len(skipped_pages)}
 
     # Hierarchical chunking
