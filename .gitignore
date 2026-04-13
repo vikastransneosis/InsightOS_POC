@@ -1,0 +1,74 @@
+# --- Secrets (never commit) ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+
+# --- Virtual environments ---
+.venv/
+venv/
+ENV/
+env/
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# --- Generated storage (ingest, KG extract, Chroma, registry) ---
+storage/*
+!storage/.gitkeep
+
+# --- Large PDFs — place your own files in documents/ after clone ---
+documents/*.pdf
+
+# --- Logs & caches ---
+*.log
+tmp/
+temp/
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Optional local model / HF caches ---
+.huggingface/
+sentence_transformers/
+
+# --- Docker local overrides ---
+docker-compose.override.yml

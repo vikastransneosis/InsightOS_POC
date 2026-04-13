@@ -1,0 +1,21 @@
+documents:
+  - path: documents/AR_24898_FEDERALBNK_2023_2024_09082024223357.pdf
+    company_id: FEDERALBNK
+    company_name: Federal Bank Ltd
+    doc_type: annual_report
+    fiscal_year: FY24
+    sector: banking
+
+  - path: documents/AR_26946_MANKIND_2024_2025_A_15072025185802.pdf
+    company_id: MANKIND
+    company_name: Mankind Pharma Ltd
+    doc_type: annual_report
+    fiscal_year: FY25
+    sector: pharma
+
+  - path: documents/AR_27230_HINDZINC_2024_2025_A_01082025181634.pdf
+    company_id: HINDZINC
+    company_name: Hindustan Zinc Ltd
+    doc_type: annual_report
+    fiscal_year: FY25
+    sector: metals
